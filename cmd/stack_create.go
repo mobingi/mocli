@@ -46,7 +46,11 @@ Otherwise, specify the full path:
 
 As an example for --spot-range, if you have a total of 20 instances running
 in the autoscaling group and your spot range is set to 50 (50%), then there
-will be a fleet of 10 spot instances and 10 on-demand instances.`,
+will be a fleet of 10 spot instances and 10 on-demand instances.
+
+Examples:
+
+  $ ` + cli.BinName() + ` stack create --nickname=sample`,
 		Run: createStack,
 	}
 
@@ -67,18 +71,18 @@ will be a fleet of 10 spot instances and 10 on-demand instances.`,
 	cmd.Flags().String("code-ref", "master", "git repo branch")
 	cmd.Flags().String("code-privkey", "", "private key if repo is private")
 	cmd.Flags().BoolVar(&usedb, "usedb", false, "if you want to use database")
-	cmd.Flags().String("dbengine", "", "valid values: db_mysql, db_postgresql")
-	cmd.Flags().String("dbtype", "", "db instance class/type")
-	cmd.Flags().String("dbstorage", "", "db storage in GB, between 5 to 6144")
-	cmd.Flags().BoolVar(&readreplica1, "dbread-replica1", false, "read replica 1")
-	cmd.Flags().BoolVar(&readreplica2, "dbread-replica2", false, "read replica 2")
-	cmd.Flags().BoolVar(&readreplica3, "dbread-replica3", false, "read replica 3")
-	cmd.Flags().BoolVar(&readreplica4, "dbread-replica4", false, "read replica 4")
-	cmd.Flags().BoolVar(&readreplica5, "dbread-replica5", false, "read replica 5")
+	cmd.Flags().String("dbengine", "", "valid values: db_mysql, db_postgresql (requires --usedb)")
+	cmd.Flags().String("dbtype", "", "db instance class/type (requires --usedb)")
+	cmd.Flags().String("dbstorage", "", "db storage in GB, between 5 to 6144 (requires --usedb)")
+	cmd.Flags().BoolVar(&readreplica1, "dbread-replica1", false, "read replica 1 (requires --usedb)")
+	cmd.Flags().BoolVar(&readreplica2, "dbread-replica2", false, "read replica 2 (requires --usedb)")
+	cmd.Flags().BoolVar(&readreplica3, "dbread-replica3", false, "read replica 3 (requires --usedb)")
+	cmd.Flags().BoolVar(&readreplica4, "dbread-replica4", false, "read replica 4 (requires --usedb)")
+	cmd.Flags().BoolVar(&readreplica5, "dbread-replica5", false, "read replica 5 (requires --usedb)")
 	cmd.Flags().BoolVar(&usecache, "use-elasticache", false, "if you want to use elasticache")
-	cmd.Flags().String("elasticache-engine", "", "valid values: Redis, Memcached")
-	cmd.Flags().String("elasticache-nodetype", "", "elasticache node size; ie. cache.r3.large")
-	cmd.Flags().String("elasticache-nodecount", "", "if redis, 1 to 6; if memcached, 1 to 20")
+	cmd.Flags().String("elasticache-engine", "", "valid values: Redis, Memcached (requires --use-elasticache)")
+	cmd.Flags().String("elasticache-nodetype", "", "elasticache node size; ie. cache.r3.large (requires --use-elasticache)")
+	cmd.Flags().String("elasticache-nodecount", "", "if redis, 1 to 6; if memcached, 1 to 20 (requires --use-elasticache)")
 	return cmd
 }
 
@@ -137,6 +141,18 @@ func createStack(cmd *cobra.Command, args []string) {
 	}
 
 	if usedb {
+		if dbengine == "" {
+			d.ErrorExit("dbengine is required", 1)
+		}
+
+		if dbtype == "" {
+			d.ErrorExit("dbtype is required", 1)
+		}
+
+		if dbstore == "" {
+			d.ErrorExit("dbstorage is required", 1)
+		}
+
 		dbs := make([]stack.CreateStackDb, 0)
 		tmp := stack.CreateStackDb{
 			Engine:       dbengine,
@@ -154,6 +170,18 @@ func createStack(cmd *cobra.Command, args []string) {
 	}
 
 	if usecache {
+		if ecengine == "" {
+			d.ErrorExit("elasticache-engine is required", 1)
+		}
+
+		if ectype == "" {
+			d.ErrorExit("elasticache-nodetype is required", 1)
+		}
+
+		if eccount == "" {
+			d.ErrorExit("elasticache-nodecount is required", 1)
+		}
+
 		caches := make([]stack.CreateStackElasticache, 0)
 		tmp := stack.CreateStackElasticache{
 			Engine:    ecengine,
