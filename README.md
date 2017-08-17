@@ -100,6 +100,16 @@ $ mobingi-cli stack describe --id=foo --fmt=raw --out=/home/bar/out.txt
 
 You can get the stack id from the `stack list` command.
 
+### Create a stack
+
+You can run `$ mobingi-cli stack create -h` to see the defaults.
+
+Example:
+
+```
+$ mobingi-cli stack create --nickname=sample
+```
+
 ### Delete a stack
 
 Example:
