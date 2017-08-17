@@ -211,10 +211,24 @@ type DescribeStack2 struct {
 }
 
 type CreateStackDb struct {
-	Engine string `json:"Engine,omitempty"`
+	Engine       string `json:"Engine,omitempty"`
+	Type         string `json:"DBType,omitempty"`
+	Storage      string `json:"DBStorage,omitempty"`
+	ReadReplica1 bool   `json:"ReadReplica1,omitempty"`
+	ReadReplica2 bool   `json:"ReadReplica2,omitempty"`
+	ReadReplica3 bool   `json:"ReadReplica3,omitempty"`
+	ReadReplica4 bool   `json:"ReadReplica4,omitempty"`
+	ReadReplica5 bool   `json:"ReadReplica5,omitempty"`
+}
+
+type CreateStackElasticache struct {
+	Engine    string `json:"ElastiCacheEngine,omitempty"`
+	NodeType  string `json:"ElastiCacheNodeType,omitempty"`
+	NodeCount string `json:"ElastiCacheNodes,omitempty"`
 }
 
 type CreateStackConfig struct {
+	Region            string `json:"region,omitempty"`
 	Architecture      string `json:"architecture,omitempty"`
 	Type              string `json:"type,omitempty"`
 	Image             string `json:"image,omitempty"`
@@ -227,6 +241,17 @@ type CreateStackConfig struct {
 	Code              string `json:"code,omitempty"`
 	GitReference      string `json:"gitReference,omitempty"`
 	GitPrivateKey     string `json:"gitPrivateKey,omitempty"`
+	// Database          []CreateStackDb          `json:"database,omitempty"`
+	// ElastiCache       []CreateStackElasticache `json:"elasticache,omitempty"`
+	Database    interface{} `json:"database,omitempty"`
+	ElastiCache interface{} `json:"elasticache,omitempty"`
+}
+
+type CreateStack struct {
+	Vendor         string            `json:"vendor,omitempty"`
+	CredentialId   string            `json:"cred,omitempty"`
+	Region         string            `json:"region,omitempty"`
+	Configurations CreateStackConfig `json:"configurations,omitempty"`
 }
 
 // PrintR prints the `field: value` of the input struct recursively. Recursion level `lvl` and `indent`
