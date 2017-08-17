@@ -228,30 +228,21 @@ type CreateStackElasticache struct {
 }
 
 type CreateStackConfig struct {
-	Region            string `json:"region,omitempty"`
-	Architecture      string `json:"architecture,omitempty"`
-	Type              string `json:"type,omitempty"`
-	Image             string `json:"image,omitempty"`
-	DockerHubUsername string `json:"dockerHubUsername,omitempty"`
-	DockerHubPassword string `json:"dockerHubPassword,omitempty"`
-	Min               int    `json:"min,omitempty"`
-	Max               int    `json:"max,omitempty"`
-	SpotRange         int    `json:"spotRange,omitempty"`
-	Nickname          string `json:"nickname,omitempty"`
-	Code              string `json:"code,omitempty"`
-	GitReference      string `json:"gitReference,omitempty"`
-	GitPrivateKey     string `json:"gitPrivateKey,omitempty"`
-	// Database          []CreateStackDb          `json:"database,omitempty"`
-	// ElastiCache       []CreateStackElasticache `json:"elasticache,omitempty"`
-	Database    interface{} `json:"database,omitempty"`
-	ElastiCache interface{} `json:"elasticache,omitempty"`
-}
-
-type CreateStack struct {
-	Vendor         string            `json:"vendor,omitempty"`
-	CredentialId   string            `json:"cred,omitempty"`
-	Region         string            `json:"region,omitempty"`
-	Configurations CreateStackConfig `json:"configurations,omitempty"`
+	Region            string      `json:"region,omitempty"`
+	Architecture      string      `json:"architecture,omitempty"`
+	Type              string      `json:"type,omitempty"`
+	Image             string      `json:"image,omitempty"`
+	DockerHubUsername string      `json:"dockerHubUsername,omitempty"`
+	DockerHubPassword string      `json:"dockerHubPassword,omitempty"`
+	Min               int         `json:"min,omitempty"`
+	Max               int         `json:"max,omitempty"`
+	SpotRange         int         `json:"spotRange,omitempty"`
+	Nickname          string      `json:"nickname,omitempty"`
+	Code              string      `json:"code,omitempty"`
+	GitReference      string      `json:"gitReference,omitempty"`
+	GitPrivateKey     string      `json:"gitPrivateKey,omitempty"`
+	Database          interface{} `json:"database,omitempty"`
+	ElastiCache       interface{} `json:"elasticache,omitempty"`
 }
 
 // PrintR prints the `field: value` of the input struct recursively. Recursion level `lvl` and `indent`

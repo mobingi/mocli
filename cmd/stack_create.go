@@ -113,11 +113,9 @@ func createStack(cmd *cobra.Command, args []string) {
 	code := cli.GetCliStringFlag(cmd, "code")
 	coderef := cli.GetCliStringFlag(cmd, "code-ref")
 	codepkey := cli.GetCliStringFlag(cmd, "code-privkey")
-
 	dbengine := cli.GetCliStringFlag(cmd, "dbengine")
 	dbtype := cli.GetCliStringFlag(cmd, "dbtype")
 	dbstore := cli.GetCliStringFlag(cmd, "dbstorage")
-
 	ecengine := cli.GetCliStringFlag(cmd, "elasticache-engine")
 	ectype := cli.GetCliStringFlag(cmd, "elasticache-nodetype")
 	eccount := cli.GetCliStringFlag(cmd, "elasticache-nodecount")
