@@ -27,7 +27,8 @@ will be a fleet of 10 spot instances and 10 on-demand instances.
 
 Example(s):
 
-  $ ` + cli.BinName() + ` stack update --id=mo-58c2297d25645-TEXlvYRBQ-tk --min=5 --max=20`,
+  $ ` + cli.BinName() + ` stack update --id=mo-58c2297d25645-TEXlvYRBQ-tk --min=5 --max=20
+  $ ` + cli.BinName() + ` stack update --id=mo-58c2297d25645-TEXlvYRBQ-tk --spot-range=25`,
 		Run: updateStack,
 	}
 
