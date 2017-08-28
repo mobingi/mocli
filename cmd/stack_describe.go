@@ -62,10 +62,6 @@ func describe(cmd *cobra.Command, args []string) {
 		return
 	}
 
-	var stacks []alm.DescribeStack
-	err = json.Unmarshal(body, &stacks)
-	d.ErrorExit(err, 1)
-
 	switch pfmt {
 	case "json":
 		indent := cli.GetCliIntFlag(cmd, "indent")
@@ -79,6 +75,10 @@ func describe(cmd *cobra.Command, args []string) {
 		}
 	default:
 		if pfmt == "min" || pfmt == "" {
+			var stacks []alm.DescribeStack
+			err = json.Unmarshal(body, &stacks)
+			d.ErrorExit(err, 1)
+
 			w := tabwriter.NewWriter(os.Stdout, 0, 10, 5, ' ', 0)
 			fmt.Fprintf(w, "INSTANCE ID\tINSTANCE TYPE\tINSTANCE MODEL\tPUBLIC IP\tPRIVATE IP\tSTATUS\n")
 			for _, inst := range stacks[0].Instances {
