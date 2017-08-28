@@ -52,17 +52,19 @@ func describe(cmd *cobra.Command, args []string) {
 	// we process `--fmt=raw` option first
 	out := cli.GetCliStringFlag(cmd, "out")
 	pfmt := cli.GetCliStringFlag(cmd, "fmt")
-	if pfmt == "raw" {
+	if sess.Config.ApiVersion == 3 {
+		if pfmt == "min" || pfmt == "" {
+			pfmt = "json"
+		}
+	}
+
+	switch pfmt {
+	case "raw":
 		fmt.Println(string(body))
 		if out != "" {
 			err = iohelper.WriteToFile(out, body)
 			d.ErrorExit(err, 1)
 		}
-
-		return
-	}
-
-	switch pfmt {
 	case "json":
 		indent := cli.GetCliIntFlag(cmd, "indent")
 		js := pretty.JSON(string(body), indent)
