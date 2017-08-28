@@ -228,6 +228,56 @@ func TestCreateDevAcct(t *testing.T) {
 	}
 }
 
+func TestCreateAlmStackDevAcct(t *testing.T) {
+	return
+	if os.Getenv("MOBINGI_CLIENT_ID") != "" && os.Getenv("MOBINGI_CLIENT_SECRET") != "" && os.Getenv("AWS_ACCESS_KEY_ID") != "" {
+		var AWSSingleEC2JSON = `{
+  "version": "2017-03-03",
+  "label": "template version label #1",
+  "description": "This template creates a sample stack with EC2 instance on AWS",
+  "vendor": {
+    "aws": {
+      "cred": "` + os.Getenv("AWS_ACCESS_KEY_ID") + `",
+      "region": "ap-northeast-1"
+    }
+  },
+  "configurations": [
+    {
+      "role": "web",
+      "flag": "Single1",
+      "provision": {
+        "instance_type": "t2.micro",
+        "instance_count": 1,
+        "keypair": false,
+        "subnet": {
+          "cidr": "10.0.1.0/24",
+          "public": true,
+          "auto_assign_public_ip": true
+        },
+        "availability_zone": "ap-northeast-1c"
+      }
+    }
+  ]
+}`
+
+		sess, _ := session.New(&session.Config{BaseApiUrl: "https://apidev.mobingi.com"})
+		alm := New(sess)
+
+		in := &StackCreateInput{
+			AlmTemplate: &AlmTemplate{
+				Contents: AWSSingleEC2JSON,
+			},
+		}
+
+		resp, body, err := alm.Create(in)
+		if err != nil {
+			t.Errorf("Expecting nil error, received %v", err)
+		}
+
+		_, _ = resp, body
+	}
+}
+
 func TestUpdate(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		defer r.Body.Close()

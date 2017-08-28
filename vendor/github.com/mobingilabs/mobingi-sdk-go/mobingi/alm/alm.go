@@ -51,7 +51,14 @@ type StackCreateConfig struct {
 	ElastiCache       interface{} `json:"elasticache,omitempty"`
 }
 
+type AlmTemplate struct {
+	Version     string
+	ContentType string
+	Contents    string
+}
+
 type StackCreateInput struct {
+	AlmTemplate    *AlmTemplate // if not nil, we use this for creation, discard others
 	Vendor         string
 	Region         string
 	CredId         string
@@ -106,43 +113,11 @@ func (s *stack) Create(in *StackCreateInput) (*client.Response, []byte, error) {
 		return nil, nil, errors.New("input cannot be nil")
 	}
 
-	if in.Vendor == "" {
-		in.Vendor = "aws"
+	if in.AlmTemplate != nil {
+		return s.createAlmStack(in)
 	}
 
-	if in.CredId == "" {
-		list, err := s.getCredsList(in.Vendor)
-		if err != nil {
-			return nil, nil, errors.Wrap(err, "get creds list failed")
-		}
-
-		if len(list) > 0 {
-			in.CredId = list[0].Id
-		}
-	}
-
-	mi, err := json.Marshal(&in.Configurations)
-	if err != nil {
-		return nil, nil, errors.Wrap(err, "marshal failed")
-	}
-
-	v := url.Values{}
-	v.Set("vendor", in.Vendor)
-	v.Set("region", in.Region)
-	v.Set("cred", in.CredId)
-	v.Set("configurations", string(mi))
-	payload := []byte(v.Encode())
-	req, err := http.NewRequest(
-		http.MethodPost,
-		s.session.ApiEndpoint()+"/alm/stack",
-		bytes.NewBuffer(payload))
-	if err != nil {
-		return nil, nil, errors.Wrap(err, "new request failed")
-	}
-
-	req.Header.Add("Authorization", "Bearer "+s.session.AccessToken)
-	req.Header.Add("Content-Type", "application/x-www-form-urlencoded; charset=utf-8")
-	return s.client.Do(req)
+	return s.createStackV2(in)
 }
 
 func (s *stack) Update(in *StackUpdateInput) (*client.Response, []byte, error) {
@@ -215,6 +190,62 @@ func (s *stack) getCredsList(vendor string) ([]credentials.VendorCredentials, er
 
 	_ = err
 	return list, nil
+}
+
+func (s *stack) createStackV2(in *StackCreateInput) (*client.Response, []byte, error) {
+	if in.Vendor == "" {
+		in.Vendor = "aws"
+	}
+
+	if in.CredId == "" {
+		list, err := s.getCredsList(in.Vendor)
+		if err != nil {
+			return nil, nil, errors.Wrap(err, "get creds list failed")
+		}
+
+		if len(list) > 0 {
+			in.CredId = list[0].Id
+		}
+	}
+
+	mi, err := json.Marshal(&in.Configurations)
+	if err != nil {
+		return nil, nil, errors.Wrap(err, "marshal failed")
+	}
+
+	v := url.Values{}
+	v.Set("vendor", in.Vendor)
+	v.Set("region", in.Region)
+	v.Set("cred", in.CredId)
+	v.Set("configurations", string(mi))
+	payload := []byte(v.Encode())
+	req, err := http.NewRequest(
+		http.MethodPost,
+		s.session.ApiEndpoint()+"/alm/stack",
+		bytes.NewBuffer(payload))
+	if err != nil {
+		return nil, nil, errors.Wrap(err, "new request failed")
+	}
+
+	req.Header.Add("Authorization", "Bearer "+s.session.AccessToken)
+	req.Header.Add("Content-Type", "application/x-www-form-urlencoded; charset=utf-8")
+	return s.client.Do(req)
+}
+
+func (s *stack) createAlmStack(in *StackCreateInput) (*client.Response, []byte, error) {
+	if in.AlmTemplate.Contents == "" {
+		return nil, nil, errors.New("contents cannot be empty")
+	}
+
+	ep := s.session.ApiEndpoint() + "/alm/template"
+	req, err := http.NewRequest(http.MethodPost, ep, bytes.NewBuffer([]byte(in.AlmTemplate.Contents)))
+	if err != nil {
+		return nil, nil, errors.Wrap(err, "new request failed")
+	}
+
+	req.Header.Add("Authorization", "Bearer "+s.session.AccessToken)
+	req.Header.Add("Content-Type", "application/x-www-form-urlencoded; charset=utf-8")
+	return s.client.Do(req)
 }
 
 func New(s *session.Session) *stack {
