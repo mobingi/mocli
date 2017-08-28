@@ -3,6 +3,7 @@ package alm
 import (
 	"encoding/json"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
@@ -27,6 +28,8 @@ func TestList(t *testing.T) {
 	}))
 
 	defer ts.Close()
+
+	// v2 api
 	sess, _ := session.New(&session.Config{
 		BaseApiUrl: ts.URL,
 		ApiVersion: 2,
@@ -37,22 +40,46 @@ func TestList(t *testing.T) {
 	if string(body) != "hello" {
 		t.Errorf("Expecting 'hello', received %s", string(body))
 	}
+
+	// latest api
+	sess, _ = session.New(&session.Config{BaseApiUrl: ts.URL})
+	alm = New(sess)
+	_, body, _ = alm.List()
+	if string(body) != "hello" {
+		t.Errorf("Expecting 'hello', received %s", string(body))
+	}
 }
 
 // local test for dev; requires the following environment variables:
 // MOBINGI_CLIENT_ID, MOBINGI_CLIENT_SECRET (dev accounts only)
 func TestListDevAcct(t *testing.T) {
 	if os.Getenv("MOBINGI_CLIENT_ID") != "" && os.Getenv("MOBINGI_CLIENT_SECRET") != "" {
+		// v2 api
 		sess, _ := session.New(&session.Config{
 			BaseApiUrl: "https://apidev.mobingi.com",
 			ApiVersion: 2,
 		})
 
 		alm := New(sess)
-		_, _, err := alm.List()
+		resp, body, err := alm.List()
 		if err != nil {
 			t.Errorf("Expecting nil error, received %v", err)
 		}
+
+		log.Println(resp)
+		log.Println(string(body))
+
+		// latest api
+		sess, _ = session.New(&session.Config{BaseApiUrl: "https://apidev.mobingi.com"})
+		alm = New(sess)
+		resp, body, err = alm.List()
+		if err != nil {
+			t.Errorf("Expecting nil error, received %v", err)
+		}
+
+		log.Println(resp)
+		log.Println(string(body))
+		// _, _ = resp, body
 	}
 }
 

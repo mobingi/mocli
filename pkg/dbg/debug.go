@@ -1,3 +1,3 @@
 package dbg
 
-var Verbose bool
+// var Verbose bool
