@@ -151,6 +151,7 @@ $ mobingi-cli stack create --alm-template=/home/user/aws-single-ec2.json
 ```
 
 #### API v2
+
 You can run `$ mobingi-cli stack create -h` to see the defaults.
 
 Examples:
@@ -167,6 +168,16 @@ $ mobingi-cli creds list
 ```
 
 ### Update stack
+
+#### API v3
+
+Similar to stack creation, you only need to update some parts of your ALM template to update your stack.
+
+```
+$ mobingi-cli stack update --id=foo --alm-template=/home/user/aws-single-ec2-updated.json
+```
+
+#### API v2
 
 Examples:
 
