@@ -183,6 +183,19 @@ Example:
 $ mobingi-cli stack delete --id=foo
 ```
 
+## ALM template operations
+
+### List stack template versions
+
+Examples:
+
+```
+$ mobingi-cli template versions --id=foo
+$ mobingi-cli template versions --id=foo --fmt=json
+```
+
+You can get the stack id from the `stack list` command.
+
 ## Server config operations
 
 ### Show server config
