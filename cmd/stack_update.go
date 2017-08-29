@@ -165,9 +165,6 @@ func updateAlmStack(cmd *cobra.Command) {
 	d.ErrorExit(err, 1)
 	exitOn401(resp)
 
-	d.Info("resp:", resp)
-	d.Info(string(body))
-
 	if strings.Contains(string(body), "success") {
 		res := pretty.JSON(string(body), 2)
 		d.Info(fmt.Sprintf("[%s] return payload:", resp.Status))
