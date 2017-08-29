@@ -52,7 +52,6 @@ type StackCreateConfig struct {
 }
 
 type AlmTemplate struct {
-	Version     string
 	ContentType string // json, yaml
 	Contents    string
 }

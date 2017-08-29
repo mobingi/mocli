@@ -67,6 +67,7 @@ func init() {
 	rootCmd.AddCommand(
 		LoginCmd(),
 		StackCmd(),
+		TemplateCmd(),
 		ServerConfigCmd(),
 		CredentialsCmd(),
 		RegistryCmd(),
