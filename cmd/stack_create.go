@@ -3,11 +3,13 @@ package cmd
 import (
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 
 	"github.com/mobingi/mobingi-cli/pkg/cli"
 	"github.com/mobingilabs/mobingi-sdk-go/mobingi/alm"
 	"github.com/mobingilabs/mobingi-sdk-go/pkg/cmdline"
 	d "github.com/mobingilabs/mobingi-sdk-go/pkg/debug"
+	"github.com/mobingilabs/mobingi-sdk-go/pkg/filetype"
 	"github.com/mobingilabs/mobingi-sdk-go/pkg/pretty"
 	"github.com/spf13/cobra"
 )
@@ -28,6 +30,17 @@ func StackCreateCmd() *cobra.Command {
 		Short: "create a stack",
 		Long: `Create a stack. For now, 'aws' is the only supported vendor.
 
+[V3 API]
+
+The only option you need for v3 is '--alm-template=path_to_template_file'.
+
+Examples:
+
+  $ ` + cmdline.Args0() + " stack create --alm-template=`echo $HOME`/tmpl.json" + `
+  $ ` + cmdline.Args0() + ` stack create --alm-template=/home/user/tmpl.yaml"
+
+[V2 API]
+
 You can get your credential id using the command:
 
   $ ` + cmdline.Args0() + ` creds list
@@ -47,13 +60,14 @@ As an example for --spot-range, if you have a total of 20 instances running
 in the autoscaling group and your spot range is set to 50 (50%), then there
 will be a fleet of 10 spot instances and 10 on-demand instances.
 
-Example(s):
+Example:
 
   $ ` + cmdline.Args0() + ` stack create --nickname=sample`,
 		Run: createStack,
 	}
 
 	cmd.Flags().SortFlags = false
+	cmd.Flags().String("alm-template", "", "`path` to alm template file")
 	cmd.Flags().String("vendor", "aws", "vendor/provider")
 	cmd.Flags().String("cred", "", "credential id")
 	cmd.Flags().String("region", "ap-northeast-1", "region code")
@@ -86,6 +100,12 @@ Example(s):
 }
 
 func createStack(cmd *cobra.Command, args []string) {
+	almt := cli.GetCliStringFlag(cmd, "alm-template")
+	if almt != "" {
+		createAlmStack(cmd)
+		return
+	}
+
 	vendor := cli.GetCliStringFlag(cmd, "vendor")
 	region := cli.GetCliStringFlag(cmd, "region")
 	cred := cli.GetCliStringFlag(cmd, "cred")
@@ -222,5 +242,15 @@ func createStack(cmd *cobra.Command, args []string) {
 	if !success {
 		d.Info(string(body))
 		return
+	}
+}
+
+func createAlmStack(cmd *cobra.Command) {
+	tf := cli.GetCliStringFlag(cmd, "alm-template")
+	b, err := ioutil.ReadFile(tf)
+	d.ErrorExit(err, 1)
+
+	if !filetype.IsJSON(string(b)) {
+		d.ErrorExit("invalid json", 1)
 	}
 }
