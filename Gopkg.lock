@@ -59,7 +59,7 @@
   branch = "master"
   name = "github.com/mobingilabs/mobingi-sdk-go"
   packages = ["client","mobingi/alm","mobingi/alm/svrconf","mobingi/credentials","mobingi/session","pkg/cmdline","pkg/debug","pkg/filetype","pkg/pretty"]
-  revision = "dc2bcb33efc171f35ea22ca702e9eed9b4043628"
+  revision = "0281103a10f4497c81018a3ea82354650a5a5493"
 
 [[projects]]
   name = "github.com/pelletier/go-buffruneio"
@@ -131,7 +131,7 @@
   branch = "master"
   name = "golang.org/x/text"
   packages = ["internal/gen","internal/triegen","internal/ucd","transform","unicode/cldr","unicode/norm"]
-  revision = "ac87088df8ef557f1e32cd00ed0b6fbc3f7ddafb"
+  revision = "b58d4b456e2002be469d0a86181874e3f5179bfd"
 
 [[projects]]
   branch = "v2"

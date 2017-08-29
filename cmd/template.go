@@ -14,6 +14,7 @@ func TemplateCmd() *cobra.Command {
 
 	cmd.AddCommand(
 		TemplateVersionsListCmd(),
+		TemplateDescribeCmd(),
 	)
 
 	return cmd

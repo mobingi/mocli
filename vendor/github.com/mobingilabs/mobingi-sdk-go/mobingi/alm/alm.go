@@ -12,10 +12,6 @@ import (
 	"github.com/pkg/errors"
 )
 
-type StackDescribeInput struct {
-	StackId string
-}
-
 type StackCreateDb struct {
 	Engine       string `json:"Engine,omitempty"`
 	Type         string `json:"DBType,omitempty"`
@@ -56,24 +52,6 @@ type AlmTemplate struct {
 	Contents    string
 }
 
-type StackCreateInput struct {
-	AlmTemplate    *AlmTemplate // if not nil, we use this for creation, discard others
-	Vendor         string
-	Region         string
-	CredId         string
-	Configurations interface{} // of type StackCreateConfig
-}
-
-type StackUpdateInput struct {
-	AlmTemplate    *AlmTemplate // if not nil, we use this for update instead of Configurations
-	StackId        string
-	Configurations interface{} // of type StackCreateConfig
-}
-
-type StackDeleteInput struct {
-	StackId string
-}
-
 type stack struct {
 	session *session.Session
 	client  client.HttpClient
@@ -87,6 +65,10 @@ func (s *stack) List() (*client.Response, []byte, error) {
 
 	req.Header.Add("Authorization", "Bearer "+s.session.AccessToken)
 	return s.client.Do(req)
+}
+
+type StackDescribeInput struct {
+	StackId string
 }
 
 func (s *stack) Describe(in *StackDescribeInput) (*client.Response, []byte, error) {
@@ -108,6 +90,14 @@ func (s *stack) Describe(in *StackDescribeInput) (*client.Response, []byte, erro
 	return s.client.Do(req)
 }
 
+type StackCreateInput struct {
+	AlmTemplate    *AlmTemplate // if not nil, we use this for creation, discard others
+	Vendor         string
+	Region         string
+	CredId         string
+	Configurations interface{} // of type StackCreateConfig
+}
+
 func (s *stack) Create(in *StackCreateInput) (*client.Response, []byte, error) {
 	if in == nil {
 		return nil, nil, errors.New("input cannot be nil")
@@ -120,6 +110,12 @@ func (s *stack) Create(in *StackCreateInput) (*client.Response, []byte, error) {
 	return s.createStackV2(in)
 }
 
+type StackUpdateInput struct {
+	AlmTemplate    *AlmTemplate // if not nil, we use this for update instead of Configurations
+	StackId        string
+	Configurations interface{} // of type StackCreateConfig
+}
+
 func (s *stack) Update(in *StackUpdateInput) (*client.Response, []byte, error) {
 	if in == nil {
 		return nil, nil, errors.New("input cannot be nil")
@@ -130,6 +126,10 @@ func (s *stack) Update(in *StackUpdateInput) (*client.Response, []byte, error) {
 	}
 
 	return s.updateStackV2(in)
+}
+
+type StackDeleteInput struct {
+	StackId string
 }
 
 func (s *stack) Delete(in *StackDeleteInput) (*client.Response, []byte, error) {
@@ -165,6 +165,39 @@ func (s *stack) GetTemplateVersions(in *GetTemplateVersionsInput) (*client.Respo
 	}
 
 	ep := s.session.ApiEndpoint() + "/alm/template?stack_id=" + in.StackId
+	req, err := http.NewRequest(http.MethodGet, ep, nil)
+	if err != nil {
+		return nil, nil, errors.Wrap(err, "new request failed")
+	}
+
+	req.Header.Add("Authorization", "Bearer "+s.session.AccessToken)
+	return s.client.Do(req)
+}
+
+type DescribeTemplateInput struct {
+	StackId   string
+	VersionId string // can be empty or 'latest'
+}
+
+func (s *stack) DescribeTemplate(in *DescribeTemplateInput) (*client.Response, []byte, error) {
+	if in == nil {
+		return nil, nil, errors.New("input cannot be nil")
+	}
+
+	if in.StackId == "" {
+		return nil, nil, errors.New("stack id cannot be empty")
+	}
+
+	var param string
+	if in.VersionId == "" || in.VersionId == "latest" {
+		param = "?version_id=latest"
+	}
+
+	if in.VersionId != "" && in.VersionId != "latest" {
+		param = "?version_id=" + in.VersionId
+	}
+
+	ep := s.session.ApiEndpoint() + "/alm/template/" + in.StackId + param
 	req, err := http.NewRequest(http.MethodGet, ep, nil)
 	if err != nil {
 		return nil, nil, errors.Wrap(err, "new request failed")
