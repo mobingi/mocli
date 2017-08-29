@@ -94,7 +94,7 @@ Examples:
 
 ```
 $ mobingi-cli stack describe --id=foo
-$ mobingi-cli stack describe --id=foo --fmt=min
+$ mobingi-cli stack describe --id=foo --fmt=json
 $ mobingi-cli stack describe --id=foo --fmt=raw --out=/home/bar/out.txt
 ```
 
