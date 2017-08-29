@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"strings"
 
 	"github.com/mobingi/mobingi-cli/pkg/cli"
 	"github.com/mobingilabs/mobingi-sdk-go/mobingi/alm"
@@ -252,5 +253,31 @@ func createAlmStack(cmd *cobra.Command) {
 
 	if !filetype.IsJSON(string(b)) {
 		d.ErrorExit("invalid json", 1)
+	}
+
+	sess, err := clisession()
+	d.ErrorExit(err, 1)
+
+	svc := alm.New(sess)
+	in := &alm.StackCreateInput{AlmTemplate: &alm.AlmTemplate{
+		ContentType: "json",
+		Contents:    string(b),
+	}}
+
+	resp, body, err := svc.Create(in)
+	d.ErrorExit(err, 1)
+	exitOn401(resp)
+
+	if strings.Contains(string(body), "success") {
+		res := pretty.JSON(string(body), 2)
+		d.Info(fmt.Sprintf("[%s] return payload:", resp.Status))
+		fmt.Println(res)
+		return
+	}
+
+	if (resp.StatusCode / 100) == 2 {
+		d.Info(fmt.Sprintf("[%s] %s", resp.Status, string(body)))
+	} else {
+		d.Error(fmt.Sprintf("[%s] %s", resp.Status, string(body)))
 	}
 }
