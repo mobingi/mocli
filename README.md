@@ -102,6 +102,55 @@ You can get the stack id from the `stack list` command.
 
 ### Create a stack
 
+#### API v3
+
+Starting in v3, we create stacks using ALM templates. Below is an example of a very simple template that creates a single EC2 instance:
+
+```
+{
+  "version": "2017-03-03",
+  "label": "template version label #1",
+  "description": "This template creates a sample stack with EC2 instance on AWS",
+  "vendor": {
+    "aws": {
+      "cred": "** Your AWS Security Key ID **",
+      "secret": "** Your AWS Security Key Secret, remove line if you have a Mobingi account **",
+      "region": "ap-northeast-1"
+    }
+  },
+  "configurations": [
+    {
+      "role": "web",
+      "flag": "Single1",
+      "provision": {
+        "instance_type": "t2.micro",
+        "instance_count": 1,
+        "keypair": false,
+        "subnet": {
+          "cidr": "10.0.1.0/24",
+          "public": true,
+          "auto_assign_public_ip": true
+        },
+        "availability_zone": "ap-northeast-1c"
+      }
+    }
+  ]
+}
+```
+
+After saving your template to a file, run the command:
+
+```
+$ mobingi-cli stack create --alm-template <path_to_template-file>
+```
+
+Example:
+
+```
+$ mobingi-cli stack create --alm-template /home/user/aws-single-ec2.json
+```
+
+#### API v2
 You can run `$ mobingi-cli stack create -h` to see the defaults.
 
 Examples:
