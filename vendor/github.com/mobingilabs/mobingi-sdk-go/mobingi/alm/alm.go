@@ -65,6 +65,7 @@ type StackCreateInput struct {
 }
 
 type StackUpdateInput struct {
+	AlmTemplate    *AlmTemplate // if not nil, we use this for update instead of Configurations
 	StackId        string
 	Configurations interface{} // of type StackCreateConfig
 }
@@ -124,36 +125,11 @@ func (s *stack) Update(in *StackUpdateInput) (*client.Response, []byte, error) {
 		return nil, nil, errors.New("input cannot be nil")
 	}
 
-	if in.StackId == "" {
-		return nil, nil, errors.New("stack id cannot be empty")
+	if in.AlmTemplate != nil {
+		return s.updateAlmStack(in)
 	}
 
-	type updatet struct {
-		Configurations string `json:"configurations,omitempty"`
-	}
-
-	mi, err := json.Marshal(&in.Configurations)
-	if err != nil {
-		return nil, nil, errors.Wrap(err, "marshal config failed")
-	}
-
-	p := updatet{}
-	p.Configurations = string(mi)
-
-	mi, err = json.Marshal(&p)
-	if err != nil {
-		return nil, nil, errors.Wrap(err, "marshal payload failed")
-	}
-
-	ep := s.session.ApiEndpoint() + "/alm/stack/" + in.StackId
-	req, err := http.NewRequest(http.MethodPut, ep, bytes.NewBuffer(mi))
-	if err != nil {
-		return nil, nil, errors.Wrap(err, "new request failed")
-	}
-
-	req.Header.Add("Authorization", "Bearer "+s.session.AccessToken)
-	req.Header.Add("Content-Type", "application/json")
-	return s.client.Do(req)
+	return s.updateStackV2(in)
 }
 
 func (s *stack) Delete(in *StackDeleteInput) (*client.Response, []byte, error) {
@@ -254,6 +230,39 @@ func (s *stack) createStackV2(in *StackCreateInput) (*client.Response, []byte, e
 	return s.client.Do(req)
 }
 
+func (s *stack) updateStackV2(in *StackUpdateInput) (*client.Response, []byte, error) {
+	if in.StackId == "" {
+		return nil, nil, errors.New("stack id cannot be empty")
+	}
+
+	type updatet struct {
+		Configurations string `json:"configurations,omitempty"`
+	}
+
+	mi, err := json.Marshal(&in.Configurations)
+	if err != nil {
+		return nil, nil, errors.Wrap(err, "marshal config failed")
+	}
+
+	p := updatet{}
+	p.Configurations = string(mi)
+
+	mi, err = json.Marshal(&p)
+	if err != nil {
+		return nil, nil, errors.Wrap(err, "marshal payload failed")
+	}
+
+	ep := s.session.ApiEndpoint() + "/alm/stack/" + in.StackId
+	req, err := http.NewRequest(http.MethodPut, ep, bytes.NewBuffer(mi))
+	if err != nil {
+		return nil, nil, errors.Wrap(err, "new request failed")
+	}
+
+	req.Header.Add("Authorization", "Bearer "+s.session.AccessToken)
+	req.Header.Add("Content-Type", "application/json")
+	return s.client.Do(req)
+}
+
 func (s *stack) createAlmStack(in *StackCreateInput) (*client.Response, []byte, error) {
 	var ct string
 	if in.AlmTemplate.Contents == "" {
@@ -271,6 +280,36 @@ func (s *stack) createAlmStack(in *StackCreateInput) (*client.Response, []byte, 
 
 	ep := s.session.ApiEndpoint() + "/alm/template"
 	req, err := http.NewRequest(http.MethodPost, ep, bytes.NewBuffer([]byte(in.AlmTemplate.Contents)))
+	if err != nil {
+		return nil, nil, errors.Wrap(err, "new request failed")
+	}
+
+	req.Header.Add("Authorization", "Bearer "+s.session.AccessToken)
+	req.Header.Add("Content-Type", ct)
+	return s.client.Do(req)
+}
+
+func (s *stack) updateAlmStack(in *StackUpdateInput) (*client.Response, []byte, error) {
+	if in.StackId == "" {
+		return nil, nil, errors.New("stack id cannot be empty")
+	}
+
+	var ct string
+	if in.AlmTemplate.Contents == "" {
+		return nil, nil, errors.New("contents cannot be empty")
+	}
+
+	switch in.AlmTemplate.ContentType {
+	case "json":
+		ct = "application/json"
+	case "yaml":
+		ct = "application/x-yaml" // same with Ruby on Rails
+	default:
+		return nil, nil, errors.New("invalid content type; should be json or yaml")
+	}
+
+	ep := s.session.ApiEndpoint() + "/alm/template/" + in.StackId
+	req, err := http.NewRequest(http.MethodPut, ep, bytes.NewBuffer([]byte(in.AlmTemplate.Contents)))
 	if err != nil {
 		return nil, nil, errors.Wrap(err, "new request failed")
 	}

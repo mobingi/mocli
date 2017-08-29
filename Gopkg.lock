@@ -59,7 +59,7 @@
   branch = "master"
   name = "github.com/mobingilabs/mobingi-sdk-go"
   packages = ["client","mobingi/alm","mobingi/alm/svrconf","mobingi/credentials","mobingi/session","pkg/cmdline","pkg/debug","pkg/filetype","pkg/pretty"]
-  revision = "b4ea0fe79be328b7e5e808d1492b798ed4cb9d9a"
+  revision = "dc2bcb33efc171f35ea22ca702e9eed9b4043628"
 
 [[projects]]
   name = "github.com/pelletier/go-buffruneio"
