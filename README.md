@@ -141,13 +141,13 @@ Starting in v3, we create stacks using ALM templates. Below is an example of a v
 After saving your template to a file, run the command:
 
 ```
-$ mobingi-cli stack create --alm-template <path_to_template-file>
+$ mobingi-cli stack create --alm-template=<path_to_template-file>
 ```
 
 Example:
 
 ```
-$ mobingi-cli stack create --alm-template /home/user/aws-single-ec2.json
+$ mobingi-cli stack create --alm-template=/home/user/aws-single-ec2.json
 ```
 
 #### API v2
