@@ -53,6 +53,7 @@ func TestList(t *testing.T) {
 // local test for dev; requires the following environment variables:
 // MOBINGI_CLIENT_ID, MOBINGI_CLIENT_SECRET (dev accounts only)
 func TestListDevAcct(t *testing.T) {
+	return
 	if os.Getenv("MOBINGI_CLIENT_ID") != "" && os.Getenv("MOBINGI_CLIENT_SECRET") != "" {
 		// v2 api
 		sess, _ := session.New(&session.Config{
@@ -402,5 +403,25 @@ func TestDeleteDevAcct(t *testing.T) {
 		}
 
 		_ = body
+	}
+}
+
+// Local test for dev; requires the following environment variables:
+// MOBINGI_CLIENT_ID, MOBINGI_CLIENT_SECRET (dev accounts only)
+func TestGetTemplateVersionsDevAcct(t *testing.T) {
+	return
+	if os.Getenv("MOBINGI_CLIENT_ID") != "" && os.Getenv("MOBINGI_CLIENT_SECRET") != "" {
+		sess, _ := session.New(&session.Config{
+			BaseApiUrl: "https://apidev.mobingi.com",
+		})
+
+		alm := New(sess)
+		in := &GetTemplateVersionsInput{StackId: "mo-58c2297d25645-ASERav0N1-tk"}
+		resp, body, err := alm.GetTemplateVersions(in)
+		if err != nil {
+			t.Errorf("Expecting nil error, received %v", err)
+		}
+
+		_, _ = resp, body
 	}
 }

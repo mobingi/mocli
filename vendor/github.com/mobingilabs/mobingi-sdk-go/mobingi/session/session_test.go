@@ -32,6 +32,7 @@ func TestNewSession(t *testing.T) {
 }
 
 func TestNewSessionDevAcct(t *testing.T) {
+	return
 	if os.Getenv("MOBINGI_CLIENT_ID") != "" && os.Getenv("MOBINGI_CLIENT_SECRET") != "" {
 		s, err := New(&Config{
 			BaseApiUrl: "https://apidev.mobingi.com",
