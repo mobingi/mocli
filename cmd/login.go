@@ -89,7 +89,7 @@ func login(cmd *cobra.Command, args []string) {
 	}
 
 	// prefer to store credentials to native store (keychain, wincred)
-	err = nativestore.Set(nativestore.CliUrl, p.ClientId, p.ClientSecret)
+	err = nativestore.Set(cli.CliLabel, cli.CliLabel, p.ClientId, p.ClientSecret)
 	if err != nil {
 		d.Info("Error in accessing native store, will use config file.")
 	}

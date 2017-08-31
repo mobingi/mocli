@@ -34,7 +34,7 @@ func clisession() (*session.Session, error) {
 	}
 
 	// check if we have credentials in nativestore
-	user, secret, err := nativestore.Get(nativestore.CliUrl)
+	user, secret, err := nativestore.Get(cli.CliUrl)
 	if err == nil {
 		if user != "" && secret != "" {
 			return session.New(&session.Config{
