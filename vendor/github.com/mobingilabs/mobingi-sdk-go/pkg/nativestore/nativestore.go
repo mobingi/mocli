@@ -6,7 +6,7 @@ import (
 	dcred "github.com/docker/docker-credential-helpers/credentials"
 )
 
-const CliUrl = "github.com/mobingi/mobingi-cli"
+const CliUrl = "mobingi-cli"
 
 func Set(url, user, secret string) error {
 	pmyns := nativeStore()
