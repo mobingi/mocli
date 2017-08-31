@@ -10,11 +10,14 @@ import (
 	"github.com/mobingilabs/mobingi-sdk-go/mobingi/session"
 	"github.com/mobingilabs/mobingi-sdk-go/pkg/cmdline"
 	d "github.com/mobingilabs/mobingi-sdk-go/pkg/debug"
+	"github.com/mobingilabs/mobingi-sdk-go/pkg/nativestore"
 	"github.com/mobingilabs/mobingi-sdk-go/pkg/pretty"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
+
+var CliNativeStoreSupported bool
 
 type authPayload struct {
 	ClientId     string `json:"client_id,omitempty"`
@@ -85,6 +88,12 @@ func login(cmd *cobra.Command, args []string) {
 	// should not be nil when `grant_type` is valid
 	if p == nil {
 		d.ErrorExit("Invalid argument(s). See `help` for more information.", 1)
+	}
+
+	// prefer to store credentials to native store (keychain, wincred)
+	err = nativestore.Set(nativestore.CliUrl, p.ClientId, p.ClientSecret)
+	if err == nil {
+		CliNativeStoreSupported = true
 	}
 
 	cnf := cli.ReadCliConfig()

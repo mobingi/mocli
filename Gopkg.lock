@@ -2,6 +2,18 @@
 
 
 [[projects]]
+  name = "github.com/danieljoos/wincred"
+  packages = ["."]
+  revision = "412b574fb496839b312a75fba146bd32a89001cf"
+  version = "v1.0.1"
+
+[[projects]]
+  name = "github.com/docker/docker-credential-helpers"
+  packages = ["credentials","osxkeychain","secretservice","wincred"]
+  revision = "d68f9aeca33f5fd3f08eeae5e9d175edf4e731d1"
+  version = "v0.6.0"
+
+[[projects]]
   name = "github.com/fatih/color"
   packages = ["."]
   revision = "570b54cabe6b8eb0bc2dfce68d964677d63b5260"
@@ -58,8 +70,8 @@
 [[projects]]
   branch = "master"
   name = "github.com/mobingilabs/mobingi-sdk-go"
-  packages = ["client","mobingi/alm","mobingi/alm/svrconf","mobingi/credentials","mobingi/session","pkg/cmdline","pkg/debug","pkg/filetype","pkg/pretty"]
-  revision = "c2b1934244089410b752ac39bb6317536e56a683"
+  packages = ["client","mobingi/alm","mobingi/alm/svrconf","mobingi/credentials","mobingi/session","pkg/cmdline","pkg/debug","pkg/filetype","pkg/nativestore","pkg/pretty"]
+  revision = "c12c05b3dba20917e046a968a275dc981ac33bd6"
 
 [[projects]]
   name = "github.com/pelletier/go-buffruneio"
@@ -142,6 +154,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "efa0fd8d1ae0ee0ec2607c5a19283dbfca5deea438559ff8fa2390bd43bf593f"
+  inputs-digest = "3db201892846e3e229f6c0788c462304dceaae763373aadcbf306b1d4057b6e3"
   solver-name = "gps-cdcl"
   solver-version = 1
