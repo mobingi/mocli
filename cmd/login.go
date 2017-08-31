@@ -17,8 +17,6 @@ import (
 	"github.com/spf13/viper"
 )
 
-var CliNativeStoreSupported bool
-
 type authPayload struct {
 	ClientId     string `json:"client_id,omitempty"`
 	ClientSecret string `json:"client_secret,omitempty"`
@@ -92,8 +90,8 @@ func login(cmd *cobra.Command, args []string) {
 
 	// prefer to store credentials to native store (keychain, wincred)
 	err = nativestore.Set(nativestore.CliUrl, p.ClientId, p.ClientSecret)
-	if err == nil {
-		CliNativeStoreSupported = true
+	if err != nil {
+		d.Info("Error in accessing native store, will use config file.")
 	}
 
 	cnf := cli.ReadCliConfig()
