@@ -13,6 +13,7 @@ func Set(lbl, url, user, secret string) error {
 	return ns.Add(cr)
 }
 
-func Get(url string) (string, string, error) {
+func Get(lbl, url string) (string, string, error) {
+	dcred.SetCredsLabel(lbl)
 	return ns.Get(url)
 }

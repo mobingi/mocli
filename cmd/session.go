@@ -40,7 +40,7 @@ func clisession() (*session.Session, error) {
 	if err != nil {
 		d.Error(err)
 	} else {
-		a, b, err := nativestore.Get(u)
+		a, b, err := nativestore.Get("clitest", u)
 		if err != nil {
 			d.Error("cannot get:", err)
 		} else {
@@ -49,7 +49,7 @@ func clisession() (*session.Session, error) {
 	}
 
 	// check if we have credentials in nativestore
-	user, secret, err := nativestore.Get(cli.CliUrl)
+	user, secret, err := nativestore.Get(cli.CliLabel, cli.CliUrl)
 	if err == nil {
 		if user != "" && secret != "" {
 			if cli.Verbose {
