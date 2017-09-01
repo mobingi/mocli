@@ -94,6 +94,7 @@ func login(cmd *cobra.Command, args []string) {
 	err = nativestore.Set(cli.CliLabel, cli.CliUrl, p.ClientId, p.ClientSecret)
 	if err != nil {
 		d.Info("Error in accessing native store, will use config file.")
+		d.Info(err)
 	}
 
 	cnf := cli.ReadCliConfig()
