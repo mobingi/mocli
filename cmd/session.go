@@ -54,6 +54,10 @@ func clisession() (*session.Session, error) {
 				},
 			})
 		}
+	} else {
+		if cli.Debug {
+			d.ErrorD(err)
+		}
 	}
 
 	if cli.Verbose {
