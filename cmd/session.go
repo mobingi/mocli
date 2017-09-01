@@ -34,6 +34,20 @@ func clisession() (*session.Session, error) {
 		return nil, errors.New("cannot get api version")
 	}
 
+	// test only
+	u := "https://github.com/mobingilabs/mobingi-sdk-go"
+	err := nativestore.Set("clitest", u, "user", "password")
+	if err != nil {
+		d.Error(err)
+	} else {
+		a, b, err := nativestore.Get(u)
+		if err != nil {
+			d.Error("cannot get:", err)
+		} else {
+			d.Info(a, b)
+		}
+	}
+
 	// check if we have credentials in nativestore
 	user, secret, err := nativestore.Get(cli.CliUrl)
 	if err == nil {
