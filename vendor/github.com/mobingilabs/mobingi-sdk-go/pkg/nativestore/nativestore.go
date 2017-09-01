@@ -8,7 +8,9 @@ import (
 )
 
 func Set(lbl, url, user, secret string) error {
-	if fmt.Sprintf("%T") != "struct" {
+	switch fmt.Sprintf("%T", ns) {
+	case "osxkeychain.Osxkeychain", "wincred.Wincred":
+	default:
 		return errors.New("native store not supported yet")
 	}
 
