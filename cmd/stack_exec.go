@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"io/ioutil"
+	"os"
 	"path"
 
 	"github.com/mobingi/mobingi-cli/pkg/cli"
@@ -50,5 +51,6 @@ func stackExec(cmd *cobra.Command, args []string) {
 	}
 	_, _, u, err := svc.GetExecResponse(in)
 	cli.ErrorExit(err, 1)
-	fmt.Println(u)
+	fmt.Println(u.Out)
+	fmt.Fprintf(os.Stderr, "%s\n", u.Err)
 }
