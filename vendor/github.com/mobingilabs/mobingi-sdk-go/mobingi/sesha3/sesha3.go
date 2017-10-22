@@ -61,11 +61,12 @@ type GetSessionUrlInput struct {
 }
 
 type GetExecResponseInput struct {
-	StackId  string
-	Target   string
-	Script   string
-	InstUser string
-	Flag     string
+	StackId    string
+	Target     string
+	Script     string
+	ScriptName string
+	InstUser   string
+	Flag       string
 }
 
 func (s *sesha3) GetExecResponse(in *GetExecResponseInput) (*client.Response, []byte, string, error) {
@@ -78,6 +79,9 @@ func (s *sesha3) GetExecResponse(in *GetExecResponseInput) (*client.Response, []
 		return nil, nil, u, errors.New("target cannot be empty")
 	}
 	if in.Script == "" {
+		return nil, nil, u, errors.New("script cannot be empty")
+	}
+	if in.ScriptName == "" {
 		return nil, nil, u, errors.New("script cannot be empty")
 	}
 
@@ -155,19 +159,21 @@ func (s *sesha3) GetExecResponse(in *GetExecResponseInput) (*client.Response, []
 	}
 
 	type payload_t struct {
-		Pem     string `json:"pem"`
-		StackId string `json:"stackid"`
-		Target  string `json:"target"`
-		Script  string `json:"script"`
-		User    string `json:"user"`
+		Pem        string `json:"pem"`
+		StackId    string `json:"stackid"`
+		Target     string `json:"target"`
+		Script     string `json:"script"`
+		ScriptName string `json:"script_name"`
+		User       string `json:"user"`
 	}
 
 	payload := payload_t{
-		Pem:     pemurl,
-		StackId: in.StackId,
-		Target:  in.Target,
-		Script:  in.Script,
-		User:    in.InstUser,
+		Pem:        pemurl,
+		StackId:    in.StackId,
+		Target:     in.Target,
+		Script:     in.Script,
+		ScriptName: in.ScriptName,
+		User:       in.InstUser,
 	}
 
 	b, err = json.Marshal(payload)

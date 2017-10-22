@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"io/ioutil"
+	"path"
 
 	"github.com/mobingi/mobingi-cli/pkg/cli"
 	"github.com/mobingilabs/mobingi-sdk-go/mobingi/sesha3"
@@ -40,11 +41,12 @@ func stackExec(cmd *cobra.Command, args []string) {
 	scriptdata, err := ioutil.ReadFile(sfile)
 	cli.ErrorExit(err, 1)
 	in := &sesha3.GetExecResponseInput{
-		StackId:  cli.GetCliStringFlag(cmd, "stackid"),
-		Target:   cli.GetCliStringFlag(cmd, "target"),
-		Script:   string(scriptdata),
-		InstUser: cli.GetCliStringFlag(cmd, "user"),
-		Flag:     cli.GetCliStringFlag(cmd, "flag"),
+		StackId:    cli.GetCliStringFlag(cmd, "stackid"),
+		Target:     cli.GetCliStringFlag(cmd, "target"),
+		Script:     string(scriptdata),
+		ScriptName: path.Base(sfile),
+		InstUser:   cli.GetCliStringFlag(cmd, "user"),
+		Flag:       cli.GetCliStringFlag(cmd, "flag"),
 	}
 	_, _, u, err := svc.GetExecResponse(in)
 	cli.ErrorExit(err, 1)
