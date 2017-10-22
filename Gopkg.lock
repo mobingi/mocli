@@ -86,10 +86,10 @@
   revision = "06020f85339e21b2478f756a78e295255ffa4d6a"
 
 [[projects]]
+  branch = "exec"
   name = "github.com/mobingilabs/mobingi-sdk-go"
   packages = ["client","mobingi/alm","mobingi/alm/svrconf","mobingi/credentials","mobingi/rbac","mobingi/registry","mobingi/sesha3","mobingi/session","pkg/cmdline","pkg/debug","pkg/filetype","pkg/nativestore","pkg/pretty"]
-  revision = "319528eb9dd6be72a035bd1a6d8f3eaf9f7e5104"
-  version = "v0.1.8"
+  revision = "173616aca4717c727621a5cbeddfa82e0c68935d"
 
 [[projects]]
   name = "github.com/moul/gotty-client"
@@ -119,7 +119,7 @@
   branch = "master"
   name = "github.com/spf13/afero"
   packages = [".","mem"]
-  revision = "e67d870304c4bca21331b02f414f970df13aa694"
+  revision = "5660eeed305fe5f69c8fc6cf899132a459a97064"
 
 [[projects]]
   name = "github.com/spf13/cast"
@@ -155,7 +155,7 @@
   branch = "master"
   name = "golang.org/x/crypto"
   packages = ["ssh/terminal"]
-  revision = "541b9d50ad47e36efd8fb423e938e59ff1691f68"
+  revision = "edd5e9b0879d13ee6970a50153d85b8fec9f7686"
 
 [[projects]]
   branch = "master"
@@ -178,6 +178,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "a58e258f99271dad580873513c4d2166a65655f7b6f90d08c37c3ffe6f9f6381"
+  inputs-digest = "d0b9c416365e33005f2a597b79d7834368c5ce6d61a67131f74e4de479e2bab7"
   solver-name = "gps-cdcl"
   solver-version = 1

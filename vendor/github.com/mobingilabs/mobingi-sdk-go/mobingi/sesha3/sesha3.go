@@ -60,6 +60,147 @@ type GetSessionUrlInput struct {
 	Timeout  int64
 }
 
+type GetExecResponseInput struct {
+	StackId  string
+	Target   string
+	Script   string
+	InstUser string
+	Flag     string
+}
+
+func (s *sesha3) GetExecResponse(in *GetExecResponseInput) (*client.Response, []byte, string, error) {
+	var u string
+
+	if in == nil {
+		return nil, nil, u, errors.New("input cannot be nil")
+	}
+	if in.Target == "" {
+		return nil, nil, u, errors.New("target cannot be empty")
+	}
+	if in.Script == "" {
+		return nil, nil, u, errors.New("script cannot be empty")
+	}
+
+	if s.session.Config.ApiVersion >= 3 {
+		if in.Flag == "" {
+			return nil, nil, u, errors.New("flag cannot be empty")
+		}
+	}
+
+	if in.InstUser == "" {
+		return nil, nil, u, errors.New("instance username cannot be empty")
+	}
+
+	// get pem url from stack id
+	almsvc := alm.New(s.session)
+	inpem := alm.GetPemInput{
+		StackId: in.StackId,
+	}
+
+	if s.session.Config.ApiVersion >= 3 {
+		inpem.Flag = in.Flag
+	}
+
+	resp, body, _, err := almsvc.GetPem(&inpem)
+	if err != nil {
+		return resp, body, u, errors.Wrap(err, "get pem failed")
+	}
+
+	type rsaurl struct {
+		Status string `json:"status"`
+		Data   string `json:"data"`
+	}
+
+	var ru rsaurl
+	err = json.Unmarshal(body, &ru)
+	if err != nil {
+		return resp, body, u, errors.Wrap(err, "url body unmarshal failed")
+	}
+
+	pemurl := strings.Replace(ru.Data, "\\", "", -1)
+
+	//get sesha3 token
+	type payload_token_t struct {
+		Username string `json:"username"`
+		Passwd   string `json:"passwd"`
+	}
+	payloadToken := payload_token_t{
+		Username: s.session.Config.Username,
+		Passwd:   s.session.Config.Password,
+	}
+
+	b, err := json.Marshal(payloadToken)
+	if err != nil {
+		return resp, body, u, errors.Wrap(err, "payload token marshal failed")
+	}
+
+	ep := s.session.Sesha3Endpoint() + "/token"
+	req, err := http.NewRequest(http.MethodGet, ep, bytes.NewBuffer(b))
+	req.Header.Add("Content-Type", "application/json")
+	resp, body, err = s.client.Do(req)
+	if err != nil {
+		return resp, body, u, errors.Wrap(err, "client do failed")
+	}
+
+	var m map[string]string
+	err = json.Unmarshal(body, &m)
+
+	if err != nil {
+		return resp, body, u, errors.Wrap(err, "token reply unmarshal failed")
+	}
+
+	token, ok := m["key"]
+	if !ok {
+		return resp, body, u, errors.Wrap(err, "can't find token")
+	}
+
+	type payload_t struct {
+		Pem     string `json:"pem"`
+		StackId string `json:"stackid"`
+		Target  string `json:"target"`
+		Script  string `json:"script"`
+		User    string `json:"user"`
+	}
+
+	payload := payload_t{
+		Pem:     pemurl,
+		StackId: in.StackId,
+		Target:  in.Target,
+		Script:  in.Script,
+		User:    in.InstUser,
+	}
+
+	b, err = json.Marshal(payload)
+	if err != nil {
+		return resp, body, u, errors.Wrap(err, "payload marshal failed")
+	}
+
+	ep = s.session.Sesha3Endpoint() + "/exec"
+	req, err = http.NewRequest(http.MethodGet, ep, bytes.NewBuffer(b))
+	req.Header.Add("Content-Type", "application/json")
+	req.Header.Add("Authorization", "Bearer "+token)
+	resp, body, err = s.client.Do(req)
+	if err != nil {
+		return resp, body, u, errors.Wrap(err, "client do failed")
+	}
+
+	type scriptRes_t struct {
+		Out string `json:"out"`
+	}
+
+	var su scriptRes_t
+	err = json.Unmarshal(body, &su)
+	if err != nil {
+		return resp, body, u, errors.Wrap(err, "reply unmarshal failed")
+	}
+
+	if su.Out != "" {
+		u = su.Out
+	}
+
+	return resp, body, u, nil
+}
+
 func (s *sesha3) GetSessionUrl(in *GetSessionUrlInput) (*client.Response, []byte, string, error) {
 	var u string
 
