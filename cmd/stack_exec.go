@@ -1,17 +1,12 @@
 package cmd
 
 import (
-	//	"fmt"
+	"fmt"
 	"io/ioutil"
 
 	"github.com/mobingi/mobingi-cli/pkg/cli"
-	//	"github.com/mobingilabs/mobingi-sdk-go/client"
 	"github.com/mobingilabs/mobingi-sdk-go/mobingi/sesha3"
 	"github.com/mobingilabs/mobingi-sdk-go/pkg/cmdline"
-	d "github.com/mobingilabs/mobingi-sdk-go/pkg/debug"
-	//	"github.com/mobingilabs/mobingi-sdk-go/pkg/pretty"
-	//	"github.com/pkg/errors"
-	//	"github.com/skratchdot/open-golang/open"
 	"github.com/spf13/cobra"
 )
 
@@ -53,43 +48,5 @@ func stackExec(cmd *cobra.Command, args []string) {
 	}
 	_, _, u, err := svc.GetExecResponse(in)
 	cli.ErrorExit(err, 1)
-	d.Info(u)
-
-	//	cli.ErrorExit(err, 1)
-	//	exitOn401(resp)
-	//
-	//	out := cli.GetCliStringFlag(cmd, "out")
-	//	pfmt := cli.GetCliStringFlag(cmd, "fmt")
-	//	switch pfmt {
-	//	case "raw":
-	//		fmt.Println(string(body))
-	//		if out != "" {
-	//			err = ioutil.WriteFile(out, body, 0644)
-	//			cli.ErrorExit(err, 1)
-	//		}
-	//	case "json":
-	//		indent := cli.GetCliIntFlag(cmd, "indent")
-	//		js := pretty.JSON(string(body), indent)
-	//		fmt.Println(js)
-	//
-	//		// write to file option
-	//		if out != "" {
-	//			err = ioutil.WriteFile(out, []byte(js), 0644)
-	//			cli.ErrorExit(err, 1)
-	//		}
-	//	default:
-	//		if browser {
-	//			d.Info("open link with a browser (if not opened automatically):", u)
-	//			_ = open.Run(u)
-	//			return
-	//		}
-	//
-	//		sshcli, err := sesha3.NewClient(&sesha3.SeshaClientInput{URL: u})
-	//		cli.ErrorExit(err, 1)
-	//
-	//		err = sshcli.Run()
-	//		if err != nil {
-	//			d.Error("session return:", err)
-	//		}
-	//	}
+	fmt.Println(u)
 }
