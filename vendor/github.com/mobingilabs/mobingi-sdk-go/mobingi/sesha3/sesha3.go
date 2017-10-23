@@ -60,7 +60,7 @@ type GetSessionUrlInput struct {
 	Timeout  int64
 }
 
-type GetExecResponseInput struct {
+type ExecScriptInput struct {
 	StackId    string
 	Target     string
 	Script     string
@@ -74,7 +74,7 @@ type ScriptRes struct {
 	Err string `json:"stderr"`
 }
 
-func (s *sesha3) GetExecResponse(in *GetExecResponseInput) (*client.Response, []byte, ScriptRes, error) {
+func (s *sesha3) ExecScript(in *ExecScriptInput) (*client.Response, []byte, ScriptRes, error) {
 	var sresp ScriptRes
 
 	if in == nil {
