@@ -41,7 +41,7 @@ func stackExec(cmd *cobra.Command, args []string) {
 	sfile := cli.GetCliStringFlag(cmd, "script")
 	scriptdata, err := ioutil.ReadFile(sfile)
 	cli.ErrorExit(err, 1)
-	in := &sesha3.GetExecResponseInput{
+	in := &sesha3.ExecScriptInput{
 		StackId:    cli.GetCliStringFlag(cmd, "stackid"),
 		Target:     cli.GetCliStringFlag(cmd, "target"),
 		Script:     string(scriptdata),
@@ -49,7 +49,7 @@ func stackExec(cmd *cobra.Command, args []string) {
 		InstUser:   cli.GetCliStringFlag(cmd, "user"),
 		Flag:       cli.GetCliStringFlag(cmd, "flag"),
 	}
-	_, _, u, err := svc.GetExecResponse(in)
+	_, _, u, err := svc.ExecScript(in)
 	cli.ErrorExit(err, 1)
 	fmt.Println(u.Out)
 	fmt.Fprintf(os.Stderr, "%s\n", u.Err)
