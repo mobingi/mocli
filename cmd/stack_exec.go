@@ -25,8 +25,7 @@ Examples:
 	}
 
 	cmd.Flags().SortFlags = false
-	cmd.Flags().String("target", "", "ip1,ip2,ip3,ipn")
-	cmd.Flags().String("stackid", "", "your stackid")
+	cmd.Flags().String("target", "", "stackid1|ip1,ip2,ip3,ipn:stackid2|ip1,ip2,ip3,ipn")
 	cmd.Flags().String("script", "", "your script path")
 	cmd.Flags().String("flag", "", "configuration flag")
 	cmd.Flags().String("user", "ec2-user", "ssh username")
@@ -42,7 +41,6 @@ func stackExec(cmd *cobra.Command, args []string) {
 	scriptdata, err := ioutil.ReadFile(sfile)
 	cli.ErrorExit(err, 1)
 	in := &sesha3.ExecScriptInput{
-		StackId:    cli.GetCliStringFlag(cmd, "stackid"),
 		Target:     cli.GetCliStringFlag(cmd, "target"),
 		Script:     string(scriptdata),
 		ScriptName: path.Base(sfile),
