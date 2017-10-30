@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"fmt"
 	"io/ioutil"
 	"os"
 	"path"
@@ -9,6 +8,7 @@ import (
 	"github.com/mobingi/mobingi-cli/pkg/cli"
 	"github.com/mobingilabs/mobingi-sdk-go/mobingi/sesha3"
 	"github.com/mobingilabs/mobingi-sdk-go/pkg/cmdline"
+	d "github.com/mobingilabs/mobingi-sdk-go/pkg/debug"
 	"github.com/spf13/cobra"
 )
 
@@ -48,7 +48,11 @@ func stackExec(cmd *cobra.Command, args []string) {
 		Flag:       cli.GetCliStringFlag(cmd, "flag"),
 	}
 	_, _, u, err := svc.ExecScript(in)
-	cli.ErrorExit(err, 1)
-	fmt.Println(u.Out)
-	fmt.Fprintf(os.Stderr, "%s\n", u.Err)
+	if err != nil {
+		d.Error("command execution failed", err)
+	}
+	if os.Stderr != nil {
+		d.Error("\n" + u.Err)
+	}
+	d.Info("\n" + u.Out)
 }
