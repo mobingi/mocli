@@ -86,10 +86,10 @@
   revision = "06020f85339e21b2478f756a78e295255ffa4d6a"
 
 [[projects]]
-  branch = "targetfmt"
   name = "github.com/mobingilabs/mobingi-sdk-go"
   packages = ["client","mobingi/alm","mobingi/alm/svrconf","mobingi/credentials","mobingi/rbac","mobingi/registry","mobingi/sesha3","mobingi/session","pkg/cmdline","pkg/debug","pkg/filetype","pkg/nativestore","pkg/pretty"]
-  revision = "f08b72e4e23a55b005c56979034c7760e8bb1246"
+  revision = "c4bcb9c1c8a74f12a0e98d5ce383902246846965"
+  version = "v0.1.12"
 
 [[projects]]
   name = "github.com/moul/gotty-client"
@@ -161,7 +161,7 @@
   branch = "master"
   name = "golang.org/x/sys"
   packages = ["unix","windows"]
-  revision = "b98136db334ff9cb24f28a68e3be3cb6608f7630"
+  revision = "661970f62f5897bc0cd5fdca7e087ba8a98a8fa1"
 
 [[projects]]
   branch = "master"
@@ -178,6 +178,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "1863aa37909928e321d897a01b37dc721908524f77fd4014eb2923413cc13e36"
+  inputs-digest = "a58e258f99271dad580873513c4d2166a65655f7b6f90d08c37c3ffe6f9f6381"
   solver-name = "gps-cdcl"
   solver-version = 1

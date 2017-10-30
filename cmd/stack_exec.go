@@ -20,7 +20,7 @@ func StackExecCmd() *cobra.Command {
 
 Examples:
 
-  $ ` + cmdline.Args0() + ` stack exec --target stackid1|ip1,ip2,ip3,ipn:stackid2|ip1,ip2,ip3,ipn --script /path/to/script`,
+  $ ` + cmdline.Args0() + ` stack exec --target "stackid1|ip1,ip2,ip3,ipn:stackid2|ip1,ip2,ip3,ipn" --script /path/to/script`,
 		Run: stackExec,
 	}
 
